@@ -35,11 +35,11 @@ export const onLoginSuccess = (dispatch, access, refresh, userName) => {
   axios.defaults.headers.common['Authorization'] = access
   // access 유효시간 30분 테스트
   setTimeout(() => {
-    console.log('Access 유효시간 1분 만료')
-  }, 60 * 1000)
+    console.log('Access 유효시간 30분 만료')
+  }, 30 * 60 * 1000)
   setTimeout(() => {
-    console.log('Refresh 유효시간 3분 만료')
-  }, 3 * 60 * 1000)
+    console.log('Refresh 유효시간 420분 만료')
+  }, 420 * 60 * 1000)
 }
 
 export const onLogout = (dispatch) => {
@@ -68,6 +68,7 @@ export const onRefresh = (dispatch, navigate, func) => {
       headers: { Refresh: refresh_token },
     })
       .then((res) => {
+        console.log(res)
         if (res.data.token_status === 'RE_ISSUED') {
           console.log('4-1. Refresh 성공')
           onLoginSuccess(
@@ -90,7 +91,6 @@ export const onRefresh = (dispatch, navigate, func) => {
       .catch((err) => {
         console.log('4-2. Refresh 에서 err 나서 로그아웃', err)
         onLogout(dispatch)
-        alert('토큰이 만료되어 로그아웃 됩니다')
         navigate('/login')
       })
   } else {
@@ -104,11 +104,11 @@ export const onRefresh = (dispatch, navigate, func) => {
 export const onAccessTest = (dispatch) => {
   axios({
     method: 'get',
-    url: 'v1/authenticationTest',
+    url: '/v1/users/info',
   })
     .then((res) => {
       console.log(res)
-      if (res.data.auth === 'Okay') {
+      if (res.data.token_status === 'VALID') {
         console.log('Access 인증 통과')
       }
     })
@@ -125,16 +125,14 @@ export const handleAuthErr = (dispatch, navigate, err, func) => {
   console.log('3. handleaErr 에서 에러메시지 파악 ', err.response.data.message)
   try {
     if (
+      err.response.data.message === 'Login_Required' ||
       err.response.data.message === 'NOT_VALID_TOKEN' ||
       err.response.data.message === 'ACCESS_NOT_VALID_TOKEN'
     ) {
       console.log('3-1. message에 의해 refresh 시도')
       // alert('로그인 정보를 재확인합니다. 잠시 기다려주세요.')
       onRefresh(dispatch, navigate, func)
-    } else if (
-      err.response.data.message === 'Login_Required' ||
-      err.response.data.message === 'REFRESH_NOT_VALID_TOKEN'
-    ) {
+    } else if (err.response.data.message === 'REFRESH_NOT_VALID_TOKEN') {
       console.log('3-2. message에 의해 로그아웃', err)
       onLogout(dispatch)
       // alert('로그인 토큰이 만료되어 로그아웃 됩니다')
@@ -142,7 +140,7 @@ export const handleAuthErr = (dispatch, navigate, err, func) => {
     }
   } catch (err) {
     console.log('3-3. handleErr에서 에러나서 로그아웃', err)
-    alert('로그인 토큰이 만료되어 로그아웃 됩니다')
+    alert('알 수 없는 오류가 발생했습니다')
     navigate('/login')
   }
 }

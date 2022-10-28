@@ -5,7 +5,8 @@ import { MilestoneContainer, SubscribeBtn, CheerBtn } from './MilestoneStyle'
 import { HeadingH3, MainHeading } from '../../styles/globalStyles'
 import { DeleteBtn, Profile } from '../Widget/WidgetStyle'
 import { StatusBadge, CategoryBadge } from '../Card/CardStyle'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { handleAuthErr } from '../Account/TokenAuth'
 
 export default function Milestone({
   milestoneData,
@@ -17,6 +18,7 @@ export default function Milestone({
   getLiker,
   metaData,
 }) {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const userName = useSelector((state) => state.auth.userName) // 로그인된 유저
   const followerUser = followerData.filter((item) => item === userName) // 팔로우 리스트 중 로그인 유저 필터링
@@ -86,6 +88,7 @@ export default function Milestone({
         })
         .catch((err) => {
           console.log(err)
+          handleAuthErr(dispatch, navigate, err, handleDeleteClick)
         })
       alert('목표가 삭제되었습니다')
     } else {
@@ -95,10 +98,23 @@ export default function Milestone({
 
   return (
     <MilestoneContainer
+      // image={
+      //   milestoneData.image === null || ''
+      //     ? 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/category_study2.jpg'
+      //     : milestoneData.image.url
+      // }
       image={
-        milestoneData.image === null || ''
+        milestoneData.image
+          ? milestoneData.image.url
+          : milestoneData.category.categoryName === '운동'
+          ? 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/workout.jpg'
+          : milestoneData.category.categoryName === '생활습관'
+          ? 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/breakfast_in_bed.jpg'
+          : milestoneData.category.categoryName === '독서'
+          ? 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/category_study.jpeg'
+          : milestoneData.category.categoryName === '공부'
           ? 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/category_study2.jpg'
-          : milestoneData.image.url
+          : 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/category_study2.jpg'
       }
     >
       <header className="header__milestone">
@@ -121,11 +137,11 @@ export default function Milestone({
           <Profile
             // image={milestoneData.profileImage}
             image={
-              milestoneData.member === '조안나'
+              milestoneData.member === 'joanna'
                 ? 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/member2.jpeg'
                 : milestoneData.member === 'sol-namoo'
                 ? 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/member1.jpg'
-                : milestoneData.member === '재영킴'
+                : milestoneData.member === 'jaeyoungkim'
                 ? 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/member3.png'
                 : milestoneData.member === 'AhnHyungJoon'
                 ? 'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/member4.png'
@@ -161,26 +177,14 @@ export default function Milestone({
       <div className="header__reaction">
         <div className="reaction">
           <HeadingH3>목표</HeadingH3>
-          <div>
-            <span>{metaData.numberOfFollowers} 팔로우</span>
-            <span className="dot">·</span>
-            <span>{metaData.numberOfLiker} 응원</span>
+          <div className="reaction_numbers">
+            <span>팔로우 {metaData.numberOfFollowers}</span>
+            <span className="dot"> · </span>
+            <span>응원 {metaData.numberOfLiker}</span>
           </div>
         </div>
         <div className="button__reaction">
-          {userName === writer || userName === null ? (
-            // 비로그인 유저이거나 작성자일 경우 요청할 수 없게
-            <div>
-              <div>
-                <SubscribeBtn />
-                팔로우 하기
-              </div>
-              <div>
-                <CheerBtn />
-                응원하기
-              </div>
-            </div>
-          ) : (
+          {userName === writer || userName === null ? null : (
             // 로그인 유저이고 작성자가 아닐 경우
             <div>
               {/* 이미 팔로우를 한 유저라면 */}

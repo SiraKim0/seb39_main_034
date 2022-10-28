@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useState, useEffect, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import Milestone from '../components/Milestone/Milestone'
 import Todolist from '../components/Todo/Todolist'
 import Timelinelist from '../components/Timeline/Timelinelist'
@@ -11,6 +11,7 @@ import { Col, Container, Row } from '../styles/globalStyles'
 import { PlusBtn } from '../components/Widget/WidgetStyle'
 import { useSelector } from 'react-redux'
 import Footer from '../components/Footer/Footer'
+import { Scroll } from '../components/Scroll/ScrollStyle'
 
 function DetailView() {
   const { id } = useParams()
@@ -32,9 +33,18 @@ function DetailView() {
   const [onCreateTodolist, setOnCreateTodolist] = useState(false) // 투두 생성 모드
   const [onCreateTimeline, setOnCreateTimeline] = useState(false) //타임라인 생성 모드
 
+  const [showButton, setShowButton] = useState(false)
+  const { pathname } = useLocation()
+
+  const scrollToTop = () => {
+    window.scroll({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+
   const userName = useSelector((state) => state.auth.userName) // 로그인된 유저
   const writer = milestoneData.member
-  // console.log('wirter: ', writer)
 
   const openCreateTodolist = useCallback(() => {
     setOnCreateTodolist(!onCreateTodolist)
@@ -50,7 +60,7 @@ function DetailView() {
         setTodoData(res.data.goal.todoList)
       })
     } catch (err) {
-      console.log('ERROR getTodo: ', err)
+      // console.log('ERROR getTodo: ', err)
     }
   }, [todoData])
 
@@ -60,7 +70,7 @@ function DetailView() {
         setTimelineData(res.data.goal.timelineList)
       })
     } catch (err) {
-      console.log('ERROR getTodo: ', err)
+      // console.log('ERROR getTodo: ', err)
     }
   }, [timelineData])
 
@@ -70,7 +80,7 @@ function DetailView() {
         setCommentData(res.data.goal.commentList)
       })
     } catch (err) {
-      console.log('ERROR getComment: ', err)
+      // console.log('ERROR getComment: ', err)
     }
   })
 
@@ -78,21 +88,23 @@ function DetailView() {
     try {
       axios.get(`/v1/goal/${id}`).then((res) => {
         setFollowerData(res.data.goal.followerList)
+        setMetaData(res.data.metadata)
       })
     } catch (err) {
-      console.log('ERROR getFollower: ', err)
+      // console.log('ERROR getFollower: ', err)
     }
-  }, [followerData])
+  }, [followerData, metaData])
 
   const getLiker = useCallback(() => {
     try {
       axios.get(`/v1/goal/${id}`).then((res) => {
         setLikerData(res.data.goal.likerList)
+        setMetaData(res.data.metadata)
       })
     } catch (err) {
-      console.log('ERROR getLiker: ', err)
+      // console.log('ERROR getLiker: ', err)
     }
-  }, [likerData])
+  }, [likerData, metaData])
 
   const getMetaData = useCallback(() => {
     try {
@@ -100,7 +112,7 @@ function DetailView() {
         setMetaData(res.data.metadata)
       })
     } catch (err) {
-      console.log('ERROR getMeta: ', err)
+      // console.log('ERROR getMeta: ', err)
     }
   }, [metaData])
 
@@ -117,14 +129,34 @@ function DetailView() {
         setFollowerData(res.data.goal.followerList)
       })
     } catch (err) {
-      console.log('ERROR: ', err)
+      // console.log('ERROR: ', err)
     }
   }
 
   useEffect(() => {
     getDetail()
-    console.log('axios 요청')
+    // console.log('axios 요청')
   }, [])
+
+  useEffect(() => {
+    const handleShowButton = () => {
+      if (window.scrollY > 500) {
+        setShowButton(true)
+      } else {
+        setShowButton(false)
+      }
+    }
+
+    // console.log(window.scrollY)
+    window.addEventListener('scroll', handleShowButton)
+    return () => {
+      window.removeEventListener('scroll', handleShowButton)
+    }
+  }, [])
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
 
   return (
     <>
@@ -183,7 +215,6 @@ function DetailView() {
             <Timelinelist
               title={milestoneData.title}
               timelineData={timelineData}
-              setTimelineData={setTimelineData}
               getTimelineData={getTimelineData}
               writer={writer}
               mode="limit"
@@ -212,19 +243,6 @@ function DetailView() {
         </Row>
         <Row>
           <Col>
-            {/* <Reaction
-              goalId={id}
-              writer={writer}
-              followerData={followerData}
-              likerData={likerData}
-              metaData={metaData}
-              getFollower={getFollower}
-              getLiker={getLiker}
-            ></Reaction> */}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
             <Commentlist
               goalId={id}
               commentData={commentData}
@@ -233,6 +251,13 @@ function DetailView() {
           </Col>
         </Row>
       </Container>
+      {showButton && (
+        <Scroll>
+          <button className="top" onClick={scrollToTop} type="button">
+            Top
+          </button>
+        </Scroll>
+      )}
       <Footer />
     </>
   )

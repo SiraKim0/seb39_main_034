@@ -11,7 +11,17 @@ import theme from '../../styles/theme'
 // ~~~ Timeline style ~~~ //
 export const TimelineList = styled(Container)``
 export const TimelineContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
   padding: 12px 0;
+  .btn1 {
+    position: absolute;
+    margin-top: -40px;
+    button {
+      height: 30px;
+      line-height: 10px;
+    }
+  }
   > article {
     margin: 10px 0;
     border: 1px solid ${theme.border};
@@ -96,6 +106,7 @@ export const TimelineContainer = styled(Container)`
 export const Wrapper = styled(ModalWrapper)`
   display: flex;
   align-items: center;
+  z-index: 1;
 `
 export const ModalBackgroundBlack = styled(ModalBackground)`
   z-index: 1;
@@ -104,7 +115,7 @@ export const ModalBackgroundBlack = styled(ModalBackground)`
 export const TimelineModalContainer = styled.div`
   background-color: ${theme.white};
   border-radius: 10px;
-  width: 90%;
+  width: 60%;
   height: 80vh;
   margin: 0 auto;
   z-index: 10;

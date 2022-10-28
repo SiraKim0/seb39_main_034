@@ -39,7 +39,7 @@ export default function Event() {
             <Col>
               <EventBanner
                 url={
-                  'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/49d5d418-3b5b-4f04-9a50-6ad253bc9198/event01.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221004%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221004T144205Z&X-Amz-Expires=86400&X-Amz-Signature=ab875ed9570499bfa1dd9b75cc73e9945bd798eb802f3394cd8fa02cbbae07b1&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22event01.jpg%22&x-id=GetObject'
+                  'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/event01.jpg'
                 }
               >
                 <div className="event_header">
@@ -51,7 +51,7 @@ export default function Event() {
             <Col>
               <EventBanner
                 url={
-                  'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/99fd9b44-3ff9-4174-a2cd-9fa55b199376/event02.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221004%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221004T145548Z&X-Amz-Expires=86400&X-Amz-Signature=073a0b95eef49a05b20017b71f055d301934e233bac656ac1d05a80586db497e&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22event02.jpg%22&x-id=GetObject'
+                  'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/event02.jpg'
                 }
               >
                 <div className="event_header">
@@ -66,7 +66,7 @@ export default function Event() {
             <Col>
               <EventBanner
                 url={
-                  'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/76c6c4fd-c317-4a6a-9432-47972eeade54/event03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221004%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221004T143901Z&X-Amz-Expires=86400&X-Amz-Signature=7170f226f0a8f01a1059b72d5e7ec7e66ebeaf9eaa77e89f2c73f1b3d46951ea&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22event03.jpg%22&x-id=GetObject'
+                  'https://goalimage.s3.ap-northeast-2.amazonaws.com/images/event03.jpg'
                 }
               >
                 <div className="event_header">
